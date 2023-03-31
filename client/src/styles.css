@@ -17,6 +17,8 @@ html {
   align-items: center;
   justify-content: space-around;
   margin:auto;
+  margin-top:10vh;
+  border-radius: 10px;
 }
 
 #login-left{
