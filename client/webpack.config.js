@@ -34,6 +34,14 @@ module.exports = {
         test: /\.css$/i,
         use: ["style-loader", "css-loader"],
       },
+      {
+        test: /\.(png|jpg|gif)$/i,
+        use: [
+          {
+            loader: 'file-loader',
+          },
+        ],
+      },
     ],
   },
   plugins: [
@@ -45,3 +53,18 @@ module.exports = {
   ],
   stats: "minimal",
 };
+
+// module.exports = {
+//   module: {
+//     rules: [
+//       {
+//         test: /\.(png|jpe?g|gif)$/i,
+//         use: [
+//           {
+//             loader: 'file-loader',
+//           },
+//         ],
+//       },
+//     ],
+//   },
+// };
