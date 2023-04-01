@@ -15,7 +15,7 @@ body{
   height: 80vh;
   background-color: #1F2833;
   align-items: center;
-  justify-content: space-around;
+  justify-content: space-evenly;
   margin:auto;
   margin-top:10vh;
   border-radius: 10px;
@@ -27,7 +27,6 @@ body{
   align-items: center;
   justify-items: center;
 }
-
 
 #login-left>p{
   color: #C5C6C7;
@@ -44,27 +43,39 @@ body{
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: space-around;
-  row-gap: 3vh;
+  justify-content: space-evenly;
+  width:27vw;
+  height:70vh;
+  border-radius: 10px;
+  background-color: #ecfcfd;
 }
 
 #login-right>p{
-  font-size: 2.2vw;
-  color: #66fcf1;
+  font-size: 2.5vw;
+  color: #45A29E;
+  margin: 20px 0;
 }
 
-#outlined-basic{
+/*#outlined-basic{*/
+/*  width:16vw;*/
+/*  font-size: 1.2vw;*/
+/*  margin: 0px;*/
+/*}*/
+
+/*.MuiInputLabel-root {*/
+/*  font-size: 18px !important;*/
+/*  padding-bottom: 20px !important;*/
+/*  color: #66fcf1;*/
+/*}*/
+
+/*.MuiInput-root {*/
+/*  height: 45px !important;*/
+/*}*/
+
+#login-small-buttons{
+  display: flex;
+  justify-content: space-between;
   width:16vw;
-  font-size: 1.2vw;
-}
-
-.MuiInputLabel-root {
-  font-size: 18px !important;
-  padding-bottom: 20px !important;
-  color: #66fcf1;
-}
-
-.MuiInput-root {
-  height: 45px !important;
+  margin:0;
 }
 
