@@ -1,5 +1,9 @@
 from pydantic import BaseModel
+from dotenv import load_dotenv
+import os
 
+
+load_dotenv("./variables.env")
 
 class UserForm(BaseModel):
     email: str | None = None
@@ -26,3 +30,10 @@ class UserData(BaseModel):
 class Token(BaseModel):
     access_token: str
     token_type: str
+
+
+class AdminForm(BaseModel):
+    email : str | None = None
+    wallet: str | None = None
+    password: str | None = None
+    private_key: str | None = None

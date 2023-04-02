@@ -14,14 +14,14 @@ from web3 import Web3
 
 app = FastAPI()
 app.add_middleware(CORSMiddleware, allow_origins=["http://localhost:8080"])
-SECRET_KEY = "23e90f52049f07bb63d41c755cc41a337342762b26fd1ea5fbf7bd037c0b36c8"
+SECRET_KEY = os.getenv("SECRET_KEY")
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES_VOTER = 5
 ACCESS_TOKEN_EXPIRE_MINUTES_ADMIN = 30
 blockchain_url = "http://localhost:8545"
 web3 = Web3(Web3.HTTPProvider(blockchain_url))
-faucet_key = "0x50abd8b341979cee2812665b6e0ebd6f9985c6c4015e0d1d75db024f9cd5c516"
-faucet_addr = "0x7892303D2e3523DcD3Edf0B11cea189AFD15ba0f"
+faucet_key = os.getenv("facuet_key")
+faucet_addr = os.getenv("faucet_addr")
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -114,6 +114,7 @@ async def transferEth(wallet : str , value : float):
     tx_hash = web3.eth.send_raw_transaction(signed_tx.rawTransaction)
 
 
+
 @app.post("/createVoter")
 async def create_user(first_name : str = Form(...) , last_name : str =  Form(...) , year : int = Form(...) , month : int = Form(...) , day : int = Form(...) , aadhaar : int = Form(...) , email : str = Form(...)):
     if checkAadhaarUsed(aadhaar):
@@ -121,6 +122,11 @@ async def create_user(first_name : str = Form(...) , last_name : str =  Form(...
             status_code=status.HTTP_409_CONFLICT,
             detail="User already exists"
         )
+
+    """Password is first four letter of first name in upper case + dob in format yyyymmdd
+    Example : Voter with name Rahul Mishra born on 20/07/1995 will have password RAHU19950720
+    """
+
     password = first_name[:4].upper() + str(year) + ("0" + str(month) if month < 10 else str(month)) + ("0" + str(day) if day < 10 else str(day))
     hashed = get_password_hash(password)
     age = calculateAge(year , month , day)
@@ -136,3 +142,54 @@ async def create_user(first_name : str = Form(...) , last_name : str =  Form(...
     create_user_db(UserForm(first_name = first_name , last_name = last_name , email = email , year = year , month = month , day = day , aadhaar = aadhaar , disabled = True , password = hashed , wallet = wallet , private_key = private_key))
     return status.HTTP_201_CREATED
 
+@app.post("/createAdmin")
+def create_admin(email : str = Form(...) , password : str = Form(...) , wallet : str = Form(...) , private_key : str = Form(...)):
+    hashed = get_password_hash(password)
+    create_admin_db(AdminForm(email = email , password = hashed , wallet = wallet , private_key = private_key))
+    return status.HTTP_201_CREATED
+
+
+def authenticate_admin(email : str , password : str):
+    admin = get_admin_details(email)
+    if not admin :
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Admin doesnt exist"
+        )
+    if not verify_password(password , admin.password):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Wrong password"
+        )
+    return admin
+@app.post("/tokenAdmin" , response_model=Token)
+def login_for_admin_token(
+    form_data: Annotated[OAuth2PasswordRequestForm, Depends()]
+):
+    admin = authenticate_admin(form_data.username , form_data.password)
+    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES_ADMIN)
+    access_token = create_access_token(
+        data={"sub": admin.email, "type": "admin"}, expires_delta=access_token_expires
+    )
+    return {"access_token": access_token, "token_type": "bearer"}
+
+
+@app.post("/verifyVoter")
+def verify_voter(aadhaar : int = Form(...) , token_admin : str =  Form(...)):
+    payload = jwt.decode(token_admin , SECRET_KEY , algorithms=[ALGORITHM])
+    if payload.get("type") != "admin":
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Only admin can verify voters"
+        )
+    if not checkAadhaarUsed(aadhaar):
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Voter not found in database"
+        )
+    set_voter_eligible(aadhaar)
+    user = get_user_details(aadhaar)
+    hash = None
+    if web3.from_wei(web3.eth.get_balance(user.wallet) , "ether") < 0.001:
+        hash = transferEth(user.wallet , 0.001)
+    return {"txn" : hash}
