@@ -20,7 +20,7 @@ ACCESS_TOKEN_EXPIRE_MINUTES_VOTER = 5
 ACCESS_TOKEN_EXPIRE_MINUTES_ADMIN = 30
 blockchain_url = "http://localhost:8545"
 web3 = Web3(Web3.HTTPProvider(blockchain_url))
-faucet_key = os.getenv("facuet_key")
+faucet_key = os.getenv("faucet_key")
 faucet_addr = os.getenv("faucet_addr")
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -138,7 +138,6 @@ async def create_user(first_name : str = Form(...) , last_name : str =  Form(...
     priv = secrets.token_hex(32)
     private_key = "0x" + priv
     wallet = Account.from_key(private_key).address
-    #transferEth(wallet , 0.01)
     create_user_db(UserForm(first_name = first_name , last_name = last_name , email = email , year = year , month = month , day = day , aadhaar = aadhaar , disabled = True , password = hashed , wallet = wallet , private_key = private_key))
     return status.HTTP_201_CREATED
 
@@ -175,7 +174,7 @@ def login_for_admin_token(
 
 
 @app.post("/verifyVoter")
-def verify_voter(aadhaar : int = Form(...) , token_admin : str =  Form(...)):
+async def verify_voter(aadhaar : int = Form(...) , token_admin : str =  Form(...)):
     payload = jwt.decode(token_admin , SECRET_KEY , algorithms=[ALGORITHM])
     if payload.get("type") != "admin":
         raise HTTPException(
@@ -191,5 +190,4 @@ def verify_voter(aadhaar : int = Form(...) , token_admin : str =  Form(...)):
     user = get_user_details(aadhaar)
     hash = None
     if web3.from_wei(web3.eth.get_balance(user.wallet) , "ether") < 0.001:
-        hash = transferEth(user.wallet , 0.001)
-    return {"txn" : hash}
+        hash = await transferEth(user.wallet , 0.001)
