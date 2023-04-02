@@ -56,26 +56,112 @@ body{
   margin: 20px 0;
 }
 
-/*#outlined-basic{*/
-/*  width:16vw;*/
-/*  font-size: 1.2vw;*/
-/*  margin: 0px;*/
-/*}*/
-
-/*.MuiInputLabel-root {*/
-/*  font-size: 18px !important;*/
-/*  padding-bottom: 20px !important;*/
-/*  color: #66fcf1;*/
-/*}*/
-
-/*.MuiInput-root {*/
-/*  height: 45px !important;*/
-/*}*/
-
 #login-small-buttons{
   display: flex;
   justify-content: space-between;
   width:16vw;
   margin:0;
 }
+
+#Regist{
+  background-color: #1F2833;
+  width:100vw;
+  height:100vh;
+  position: fixed;
+}
+
+#Regist>div{
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: center;
+
+  background-color: #eafcf6;
+  border-radius: 10px;
+  width: 50vw;
+  height: 80vh;
+  margin: auto;
+  margin-top: 10vh;
+}
+
+#signup-title{
+  font-family: Roboto;
+  font-size: 3.5rem;
+  margin: auto;
+  font-weight: 600;
+}
+
+#signup-form{
+  display: flex;
+
+}
+
+#Heading>h1{
+  color: #431F1F;
+  font-size: 3.2rem;
+  font-weight: 900;
+}
+
+#center-box{
+  display: flex;
+  flex-direction: column;
+  width: 40%;
+  height: 60%;
+
+  background-color: white;
+
+  border-radius: 20px;
+  align-items: center;
+  row-gap: 1vw;
+}
+
+#Top-text{
+  font-family: Roboto;
+  text-align: center;
+  font-size: 3.5rem;
+  font-weight: bolder;
+}
+
+#Top-text>p{
+  color:#2b9d82;
+  margin: 0;
+
+  text-shadow: 0 0 1px #0B0C10 ;
+}
+
+#Form-top{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 15vh;
+  column-gap: 4vw;
+  width: 100%;
+}
+
+#Form-top-left, #Form-top-right{
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  row-gap: 5vh;
+}
+
+.Text-input{
+  width: 15vw;
+  height: 4vh;
+}
+
+
+#Form-bottom{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  row-gap: 5vh;
+}
+
+.Text-input2{
+  width: 34vw;
+  height: 4vh;
+}
+
 
