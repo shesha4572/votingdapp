@@ -6,7 +6,7 @@ const btn = {
     fontSize : '2rem',
     backgroundColor:'#2b9d82',
     '&:hover': {
-        backgroundColor:'#1c5748'
+        backgroundColor:'#2d8d79'
     }
 }
 
@@ -19,28 +19,28 @@ const input = {
 
 export default function Register () {
     return (
-        <div id='Regist'>
+        <div id='reg-background'>
 
-    <div id="center-box">
+    <div id="reg-center-box">
 
-        <div id="Top-text">
+        <div id="reg-Top-text">
             <p>Sign up</p>
         </div>
 
-        <div id="Form-top">
+        <div id="reg-Form-top">
 
-            <div id="Form-top-left">
+            <div id="reg-Form-top-left">
                 <TextField className="Text-input" sx={input} variant='standard' type="text"  id="First-name" label="First Name" required/>
                 <TextField className="Text-input" sx={input} variant='standard' type="date"  id="DOB" label="Date of Birth" value='1' required/>
             </div>
 
-            <div id="Form-top-right">
+            <div id="reg-Form-top-right">
                 <TextField className="Text-input" sx={input} variant='standard' type="text" id="Last-name" label="Last Name" required/>
                 <TextField className="Text-input" sx={input} variant='standard' type="number" id="Phone-no" label="Contact Number" required/>
             </div>
         </div>
 
-        <div id="Form-bottom">
+        <div id="reg-Form-bottom">
             <TextField className="Text-input2" sx={input} variant='standard' type="text" id="Email" label="Email Address" required/>
             <TextField className="Text-input2" sx={input} variant='standard' type="text" id="number" label="Aadhar number" required/>
             <TextField className="Text-input2" sx={input} variant='standard' type="password" id="Password" label="Create a password" required/>

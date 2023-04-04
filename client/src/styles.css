@@ -9,7 +9,10 @@ body{
   background: #0B0C10;
 }
 
-#mid-box{
+
+/*LOGIN PAGE CSS*/
+
+#login-mid-box{
   display: flex;
   width: 70vw;
   height: 80vh;
@@ -63,14 +66,21 @@ body{
   margin:0;
 }
 
-#Regist{
+#login-small-buttons>Button{
+  color:#45A29E;
+}
+
+
+/*REGISTRATION PAGE CSS*/
+
+#reg-background{
   background-color: #1F2833;
   width:100vw;
   height:100vh;
   position: fixed;
 }
 
-#Regist>div{
+#reg-center-box{
   display: flex;
   flex-direction: column;
   justify-content: space-evenly;
@@ -84,52 +94,21 @@ body{
   margin-top: 10vh;
 }
 
-#signup-title{
-  font-family: Roboto;
-  font-size: 3.5rem;
-  margin: auto;
-  font-weight: 600;
-}
 
-#signup-form{
-  display: flex;
-
-}
-
-#Heading>h1{
-  color: #431F1F;
-  font-size: 3.2rem;
-  font-weight: 900;
-}
-
-#center-box{
-  display: flex;
-  flex-direction: column;
-  width: 40%;
-  height: 60%;
-
-  background-color: white;
-
-  border-radius: 20px;
-  align-items: center;
-  row-gap: 1vw;
-}
-
-#Top-text{
+#reg-Top-text{
   font-family: Roboto;
   text-align: center;
   font-size: 3.5rem;
   font-weight: bolder;
 }
 
-#Top-text>p{
+#reg-Top-text>p{
   color:#2b9d82;
   margin: 0;
-
   text-shadow: 0 0 1px #0B0C10 ;
 }
 
-#Form-top{
+#reg-Form-top{
   display: flex;
   justify-content: center;
   align-items: center;
@@ -138,7 +117,7 @@ body{
   width: 100%;
 }
 
-#Form-top-left, #Form-top-right{
+#reg-Form-top-left, #reg-Form-top-right{
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -152,7 +131,7 @@ body{
 }
 
 
-#Form-bottom{
+#reg-Form-bottom{
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -164,9 +143,39 @@ body{
   height: 4vh;
 }
 
-#DOB::-webkit-datetime-edit-year-field:not([aria-valuenow]),
-::-webkit-datetime-edit-month-field:not([aria-valuenow]),
-::-webkit-datetime-edit-day-field:not([aria-valuenow]) {
-  color: transparent;
+
+/*ADMIN LOGIN CSS*/
+
+#admin-login-background{
+  background-color: #1A1A1D;
+  width:100vw;
+  height:100vh;
+  position: fixed;
 }
 
+#admin-login-center-box{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  row-gap: 8vh;
+  align-items: center;
+
+  background-color: #f6f2f2;
+  border-radius: 10px;
+  width: 28vw;
+  height: 70vh;
+  margin: 15vh auto 15vh auto;
+}
+
+#admin-login-title{
+  font-family: Arial, Helvetica, sans-serif;
+  text-align: center;
+  font-size: 3.5rem;
+  font-weight: bolder;
+  margin-bottom: 25px;
+}
+
+#admin-login-title>p{
+  color:#C3073F;
+  margin: 0;
+}

@@ -7,8 +7,12 @@ const btn = {
     fontSize: '1.2vw',
     backgroundColor: '#45A29E',
     padding: '10px',
-    width: '10vw'
+    width: '10vw',
+    '&:hover': {
+        backgroundColor: '#327e79'
+    }
 }
+
 
 const input = {
     '.MuiInputBase-input': { fontSize: '1.5rem' },
@@ -21,7 +25,7 @@ const input = {
 export default function Login() {
     return(
         <>
-        <div id="mid-box" >
+        <div id="login-mid-box" >
             <div id="login-left">
                 <img src={logo} alt="test"/>
                 <p>Votechain <br/> The Future of Voting</p>
@@ -29,8 +33,8 @@ export default function Login() {
 
             <div id="login-right">
                 <p>Login</p>
-                <TextField  sx={input} label="Email" variant="standard" type="email"/>
-                <TextField  sx={input} label="Password" variant="standard" type="password"/>
+                <TextField  sx={input} label="Email" variant="standard" type="email" required/>
+                <TextField  sx={input} label="Password" variant="standard" type="password" required/>
 
                 <div id="login-small-buttons">
                     <Button variant='text'>Register</Button>
