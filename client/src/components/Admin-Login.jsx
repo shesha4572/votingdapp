@@ -1,6 +1,8 @@
-import React from "react";
+import React, {useState} from "react";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
+import axios from "axios";
+import Cookies from "universal-cookie";
 
 const btn = {
     fontSize : '2rem',
@@ -18,7 +20,20 @@ const input = {
     }
 }
 
-export default function adminLogin () {
+export const AdminLogin = () => {
+
+    const [email , setEmail] = useState("")
+    const [password , setPassword] = useState("")
+
+
+    function onLoginClick() {
+        const form = new FormData()
+        form.set("username" , email)
+        form.set("password" , password)
+
+        axios.post("http://localhost:8000/tokenAdmin" , form).then(res => {if(res.status === 200){const cookie = new Cookies; cookie.set('admin_token' , res.data.access_token , {maxAge : 30 * 60}); }})
+    }
+
     return(
         <div id='admin-login-background'>
             <div id='admin-login-center-box'>
@@ -27,10 +42,10 @@ export default function adminLogin () {
                     <p>Admin login</p>
                 </div>
 
-                <TextField  sx={input} variant='standard' type="text" id="admin-uname" label="Username" required/>
-                <TextField  sx={input} variant='standard' type="password" id="admin-pass" label="Password" required/>
+                <TextField  sx={input} variant='standard' type="text" id="admin-uname" label="Username" required onChange={e => setEmail(e.target.value)}/>
+                <TextField  sx={input} variant='standard' type="password" id="admin-pass" label="Password" required onChange={e => setPassword(e.target.value)}/>
 
-                <Button id="admin-login-button" variant='contained' sx={btn}>Login</Button>
+                <Button id="admin-login-button" variant='contained' sx={btn} onClick={onLoginClick}>Login</Button>
 
             </div>
 

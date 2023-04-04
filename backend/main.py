@@ -13,7 +13,7 @@ from web3 import Web3
 
 
 app = FastAPI()
-app.add_middleware(CORSMiddleware, allow_origins=["http://localhost:8080"])
+app.add_middleware(CORSMiddleware , allow_origins = ["http://localhost:8080"] , allow_credentials = True , allow_headers = ['*'] , allow_methods = ['*'])
 SECRET_KEY = os.getenv("SECRET_KEY")
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES_VOTER = 5
@@ -26,8 +26,6 @@ faucet_addr = os.getenv("faucet_addr")
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
-
-app = FastAPI()
 
 
 
@@ -78,7 +76,7 @@ def create_access_token(data: dict, expires_delta: timedelta | None = None):
 
 
 @app.post("/tokenVoter", response_model=Token)
-async def login_for_access_token(
+def login_for_access_token(
     form_data: Annotated[OAuth2PasswordRequestForm, Depends()]
 ):
 
@@ -101,7 +99,7 @@ def default():
     return {"res" : "Hello World"}
 
 
-async def transferEth(wallet : str , value : float):
+def transferEth(wallet : str , value : float , email : str):
     nonce = web3.eth.get_transaction_count(faucet_addr)
     tx = {
         'nonce': nonce,
@@ -112,11 +110,11 @@ async def transferEth(wallet : str , value : float):
     }
     signed_tx = Account.sign_transaction(tx , faucet_key)
     tx_hash = web3.eth.send_raw_transaction(signed_tx.rawTransaction)
-
+    
 
 
 @app.post("/createVoter")
-async def create_user(first_name : str = Form(...) , last_name : str =  Form(...) , year : int = Form(...) , month : int = Form(...) , day : int = Form(...) , aadhaar : int = Form(...) , email : str = Form(...)):
+def create_user(first_name : str = Form(...) , last_name : str =  Form(...) , year : int = Form(...) , month : int = Form(...) , day : int = Form(...) , aadhaar : int = Form(...) , email : str = Form(...)):
     if checkAadhaarUsed(aadhaar):
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
@@ -174,7 +172,7 @@ def login_for_admin_token(
 
 
 @app.post("/verifyVoter")
-async def verify_voter(aadhaar : int = Form(...) , token_admin : str =  Form(...)):
+def verify_voter(aadhaar : int = Form(...) , token_admin : str =  Form(...)):
     payload = jwt.decode(token_admin , SECRET_KEY , algorithms=[ALGORITHM])
     if payload.get("type") != "admin":
         raise HTTPException(
@@ -188,6 +186,5 @@ async def verify_voter(aadhaar : int = Form(...) , token_admin : str =  Form(...
         )
     set_voter_eligible(aadhaar)
     user = get_user_details(aadhaar)
-    hash = None
     if web3.from_wei(web3.eth.get_balance(user.wallet) , "ether") < 0.001:
-        hash = await transferEth(user.wallet , 0.001)
+        transferEth(user.wallet , 0.001)
