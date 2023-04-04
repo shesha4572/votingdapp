@@ -31,7 +31,7 @@ export default function Register () {
 
             <div id="Form-top-left">
                 <TextField className="Text-input" sx={input} variant='standard' type="text"  id="First-name" label="First Name" />
-                <TextField className="Text-input" sx={input} variant='standard' type="number"  id="Age" label="Age" />
+                <TextField className="Text-input" sx={input} variant='standard' type="date"  id="DOB" label="Date of BIrth"/>
             </div>
 
             <div id="Form-top-right">
