@@ -48,7 +48,6 @@ export const AdminLogin = () => {
                 <Button id="admin-login-button" variant='contained' sx={btn} onClick={onLoginClick}>Login</Button>
 
             </div>
-
         </div>
     )
 }

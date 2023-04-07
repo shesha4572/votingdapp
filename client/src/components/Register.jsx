@@ -55,17 +55,17 @@ export const Register = () =>  {
 
             <div id="reg-Form-top-left">
                 <TextField className="Text-input" sx={input} variant='standard' type="text"  id="First-name" label="First Name" required onChange={(e) => setFirstName(e.target.value)}/>
-                <TextField className="Text-input" sx={input} variant='standard' type="date"  id="DOB" label="Date of Birth" required value={1} onChange={(e) => {const strDate = e.target.value.split("-"); setDay(strDate[2]); setMonth(strDate[1]); setYear(strDate[0]) }}/>
+                <TextField className="Text-input" sx={input} variant='standard' type="date"  id="DOB" label="Date of Birth"  onChange={(e) => {const strDate = e.target.value.split("-"); setDay(strDate[2]); setMonth(strDate[1]); setYear(strDate[0]) }}/>
             </div>
 
             <div id="reg-Form-top-right">
                 <TextField className="Text-input" sx={input} variant='standard' type="text" id="Last-name" label="Last Name" required onChange={(e) => setLastName(e.target.value)}/>
-                <TextField className="Text-input" sx={input} variant='standard' type="number" id="Phone-no" required label="Contact Number" />
+                <TextField className="Text-input" sx={input} variant='standard' type="number" id="aadhaar" label="Aadhar number" required onChange={(e) => setAadhaar(e.target.value)}/>
             </div>
         </div>
 
         <div id="reg-Form-bottom">
-            <TextField className="Text-input2" sx={input} variant='standard' type="number" id="aadhaar" label="Aadhar number" required onChange={(e) => setAadhaar(e.target.value)}/>
+
             <TextField className="Text-input2" sx={input} variant='standard' type="text" id="Email" label="Email Address" required onChange={(e) => setEmail(e.target.value)}/>
         </div>
         <Button id="Register-button" type={"submit"} variant='contained' sx={btn} onClick={onSubmitRegisterForm}>Register</Button>

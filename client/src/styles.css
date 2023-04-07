@@ -66,8 +66,9 @@ body{
   margin:0;
 }
 
-#login-small-buttons>Button{
+#login-reg-btn,#login-admin-btn{
   color:#45A29E;
+  text-decoration: none;
 }
 
 
@@ -93,7 +94,6 @@ body{
   margin: auto;
   margin-top: 10vh;
 }
-
 
 #reg-Top-text{
   font-family: Roboto;
@@ -130,12 +130,11 @@ body{
   height: 4vh;
 }
 
-
 #reg-Form-bottom{
   display: flex;
   flex-direction: column;
   justify-content: center;
-  row-gap: 5vh;
+  row-gap: 3vh;
 }
 
 .Text-input2{
@@ -178,4 +177,58 @@ body{
 #admin-login-title>p{
   color:#C3073F;
   margin: 0;
+}
+
+
+/*HOMEPAGE CSS*/
+
+body{
+  overflow: hidden;
+}
+
+.homepage{
+  background-color: #1F2833;
+  display:flex;
+}
+
+#home-bg-img{
+  height:100vh;
+  width:65vw;
+  position: center;
+}
+
+.home-buttons{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: auto;
+  row-gap: 8vh;
+}
+
+#home-content{
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  row-gap:1vh;
+}
+
+#home-logo{
+  width:12vw;
+  padding: 0;
+  margin: 0;
+}
+
+#home-text{
+  padding:0;
+  margin:0;
+  font-size: 2.5rem;
+  font-family: Cambria;
+  text-align: center;
+  color: #C5C6C7;
+}
+
+#home-login-btn, #home-register-btn{
+  width:12vw;
+  height: 5vh;
+  padding:30px;
 }

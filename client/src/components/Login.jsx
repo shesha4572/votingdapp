@@ -43,7 +43,7 @@ export const Login = () => {
         <>
         <div id="login-mid-box" >
             <div id="login-left">
-                <img src={logo} alt="test"/>
+                <img src={logo} alt="logo"/>
                 <p>Votechain <br/> The Future of Voting</p>
             </div>
 
@@ -53,8 +53,8 @@ export const Login = () => {
                 <TextField  sx={input} label="Password" variant="standard" type="password" id="password" onChange={e => setPassword(e.target.value)}/>
 
                 <div id="login-small-buttons">
-                    <Link href={"/voterRegister"}><Button variant='text'>Register</Button></Link>
-                    <Link href={"/adminLogin"}><Button variant='text'>Admin Login</Button></Link>
+                    <Link href={"/voterRegister"}><Button variant='text'  id='login-reg-btn'>Register</Button></Link>
+                    <Link href={"/adminLogin"}><Button variant='text' id='login-admin-btn'>Admin Login</Button></Link>
                 </div>
 
                 <Button variant="contained" size="14px" id="login-button" type="submit" sx={btn} onClick={onLoginClick}>
