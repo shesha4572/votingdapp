@@ -250,4 +250,20 @@ async def add_Candidate(name : str = Form(...) , party_photo_url : str = Form(..
     return status.HTTP_201_CREATED
 
 
+@app.get("/allCandidates")
+def get_all_candidates():
+    candidate_list = []
+    count = contract.functions.getContestantCount().call()
+    for i in range(1, count + 1):
+        candidate_list.append(get_candidate_details(i))
+    return {
+        "candidates" : candidate_list
+    }
+
+@app.post("/changePhase")
+def change_phase(phase : int = Form(...)):
+    pass
+
+
+
 
