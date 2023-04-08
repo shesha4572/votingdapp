@@ -134,7 +134,7 @@ async def transferEth(wallet : str , value : float , email : str):
 
 @app.post("/createVoter")
 async def create_user(first_name : str = Form(...) , last_name : str =  Form(...) , year : int = Form(...) , month : int = Form(...) , day : int = Form(...) , aadhaar : int = Form(...) , email : str = Form(...)):
-    if await checkAadhaarUsed(aadhaar):
+    if checkAadhaarUsed(aadhaar):
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
             detail="User already exists"
@@ -261,9 +261,26 @@ def get_all_candidates():
     }
 
 @app.post("/changePhase")
-def change_phase(phase : int = Form(...)):
-    pass
-
-
+async def change_phase(phase : int = Form(...) , token_admin : str = Form(...)):
+    payload = jwt.decode(token_admin, SECRET_KEY, algorithms=[ALGORITHM])
+    if payload.get("type") != "admin":
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Only admin can change phase of election"
+        )
+    admin = get_admin_details(payload.get("sub"))
+    curr_phase = contract.functions.getPhase().call()
+    if curr_phase >= phase:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Cannot change phase to previous one or same one"
+        )
+    nonce = web3.eth.get_transaction_count(admin.wallet)
+    chain_id = web3.eth.chain_id
+    call_function = contract.functions.changeState(phase).build_transaction({"from" : admin.wallet , "nonce" : nonce , "chainId" : chain_id})
+    signed_tx = web3.eth.account.sign_transaction(call_function, private_key=admin.private_key)
+    send_tx = web3.eth.send_raw_transaction(signed_tx.rawTransaction)
+    tx_receipt = web3.eth.wait_for_transaction_receipt(send_tx)["transactionHash"].hex()
+    print(tx_receipt)
 
 
