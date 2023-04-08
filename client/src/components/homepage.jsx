@@ -16,13 +16,16 @@ export const Homepage = () => {
     return (
         <div className="homepage">
             <img src={homeBackground} alt='background image' id="home-bg-img"/>
-            <div className='home-buttons'>
+            <div className='home-right'>
                 <div id='home-content'>
                     <img src={Logo} alt="logo" id="home-logo" />
                     <h4 id="home-text"><strong>VOTECHAIN</strong><br/>Democracy meets Technology</h4>
                 </div>
+                <div id="home-buttons">
                 <Link href={"/voterLogin"}><Button id='home-login-btn' variant="contained" sx={btn}>Login</Button></Link>
                 <Link href={"/voterRegister"} ><Button id='home-register-btn' variant='contained' sx={btn}>Register</Button></Link>
+                </div>
+
             </div>
         </div>
     )

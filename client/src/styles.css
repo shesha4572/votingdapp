@@ -182,9 +182,9 @@ body{
 
 /*HOMEPAGE CSS*/
 
-body{
-  overflow: hidden;
-}
+/*body{*/
+/*  overflow: hidden;*/
+/*}*/
 
 .homepage{
   background-color: #1F2833;
@@ -197,7 +197,7 @@ body{
   position: center;
 }
 
-.home-buttons{
+.home-right{
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -227,8 +227,118 @@ body{
   color: #C5C6C7;
 }
 
+#home-buttons{
+  display: flex;
+  flex-direction: column;
+  row-gap: 5vh;
+}
+
 #home-login-btn, #home-register-btn{
   width:12vw;
   height: 5vh;
   padding:30px;
+  color: #efefef;
+}
+
+
+/*NAVBAR CSS*/
+
+nav{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  height: 5vh;
+  background-color: #1F2833;
+  padding:20px;
+}
+
+#nav-left{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  column-gap: 35px;
+}
+
+#nav-logo{
+  width:50px;
+}
+
+.nav-btn{
+  padding:30px;
+}
+
+#logout-btn{
+  color: #e60303;
+}
+
+
+/*VOTING PAGE CSS*/
+
+#voting-cont{
+  padding: 8vh 0;
+  display: flex;
+  justify-content: space-between;
+  width:80vw;
+  column-gap: 4vw;
+  flex-wrap: wrap;
+  row-gap: 5vh;
+}
+
+
+/*CANDIDATE CARD CSS*/
+
+.card{
+  display: flex;
+  flex-direction: column;
+  width:20vw;
+  align-items: center;
+  background-color: #1F2833;
+  padding: 30px 30px;
+  row-gap:25px;
+  border-radius: 10px;
+}
+
+.card-details{
+  display: flex;
+  flex-direction: column;
+  align-items: self-start;
+  color: #C5C6C7;
+  font-family: Cambria;
+  font-size: 1.5rem;
+  row-gap: 20px;
+}
+
+.card-details>p{
+  margin: 0;
+}
+
+.card-img{
+  border-radius: 10px;
+}
+
+.card-vote-btn{
+  width:8vw;
+}
+
+
+/*CANDIDATE CARD 2 CSS*/
+
+.card2{
+  display: flex;
+  height: 20vh;
+  column-gap: 2vw;
+  align-items: center;
+  background-color: #1F2833;
+  border-radius: 20px;
+  padding: 30px;
+}
+
+.card2-img{
+  height: 100%;
+  border-radius: 20px;
+}
+
+.card2-vote-btn{
+  height: 5vh;
 }
