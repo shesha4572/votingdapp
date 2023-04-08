@@ -8,6 +8,7 @@ client = pymongo.MongoClient(os.getenv("mongo_db_url") , server_api=ServerApi('1
 db = client.Voting_DAPP
 voters = db.voters
 admins = db.admins
+candidates = db.candidates
 
 
 """
@@ -57,3 +58,11 @@ def set_voter_eligible(aadhaar : int):
     query = {"aadhaar" : aadhaar}
     updated_value = {"$set" : {"disabled" : False}}
     voters.update_one(query , updated_value)
+
+def create_candidate_db(candidate : Candidate):
+    candidates.insert_one(jsonable_encoder(candidate))
+
+def get_candidate_details(id : int):
+    query = {"id" : id}
+    res = list(candidates.find(query))
+    return Candidate(**res[0])

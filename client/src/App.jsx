@@ -13,7 +13,7 @@ function App() {
         <Route path={"/voterLogin"} element={<Login/>}/>
         <Route path={"/voterRegister"} element={<Register/>}/>
         <Route path={"/adminLogin"} element={<AdminLogin/>}/>
-        <Route path={"/home"} element={<Homepage/>}/>
+        <Route path={"/"} element={<Homepage/>}/>
         <Route path={"/vote"} element={<Voting/>}/>
       </Routes>
     </BrowserRouter>

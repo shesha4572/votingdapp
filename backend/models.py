@@ -37,3 +37,9 @@ class AdminForm(BaseModel):
     wallet: str | None = None
     password: str | None = None
     private_key: str | None = None
+
+class Candidate(BaseModel):
+    id : int | None = None
+    name : str | None = None
+    party_photo_url : str | None = None
+    party_name : str | None = None

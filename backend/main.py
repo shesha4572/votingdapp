@@ -8,8 +8,9 @@ from passlib.context import CryptContext
 from backend.database import *
 from backend.models import *
 from eth_account import Account
-import secrets , json
+import secrets , json , smtplib
 from web3 import Web3
+from email.message import EmailMessage
 
 
 app = FastAPI()
@@ -27,6 +28,10 @@ abi = open("./backend/contracts/Election.json" , "r")
 contract_abi = json.load(abi)["abi"]
 abi.close()
 contract = web3.eth.contract(address=contract_addr , abi=contract_abi)
+s = smtplib.SMTP('smtp.gmail.com', 587)
+s.starttls()
+mail = "votingdapp123@gmail.com"
+s.login(mail , os.getenv("mail_pass"))
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -114,7 +119,16 @@ async def transferEth(wallet : str , value : float , email : str):
         'gasPrice': web3.eth.gas_price
     }
     signed_tx = Account.sign_transaction(tx , faucet_key)
-    tx_hash = web3.eth.send_raw_transaction(signed_tx.rawTransaction)
+    send_tx = web3.eth.send_raw_transaction(signed_tx.rawTransaction)
+    tx_receipt = web3.eth.wait_for_transaction_receipt(send_tx)["transactionHash"].hex()
+    msg = EmailMessage()
+    msg["Subject"] = "ETH transfer to you voter wallet"
+    msg["From"] = mail
+    msg["To"] = email
+    ethscan_url = f"https://sepolia.etherscan.io/tx/{tx_receipt}"
+    msg.set_content(f"Dear User,\n0.001 ETH transferred successfully to your voter wallet {wallet}.\nTransaction Hash : {tx_receipt}\nCheckout transaction of blockchain explorer at {ethscan_url}")
+    s.send_message(msg)
+
     
 
 
@@ -176,13 +190,21 @@ async def login_for_admin_token(
     return {"access_token": access_token, "token_type": "bearer"}
 
 
-async def registerVoter(admin_addr , admin_key , voter_addr):
+async def registerVoter(admin_addr , admin_key , voter_addr , voter_email):
     nonce = web3.eth.get_transaction_count(admin_addr)
     chain_id = web3.eth.chain_id
     call_function = contract.functions.voterRegisteration(voter_addr).build_transaction({"from" : admin_addr , "nonce" : nonce , "chainId" : chain_id})
     signed_tx = web3.eth.account.sign_transaction(call_function , private_key=admin_key)
     send_tx = web3.eth.send_raw_transaction(signed_tx.rawTransaction)
     tx_receipt = web3.eth.wait_for_transaction_receipt(send_tx)["transactionHash"].hex()
+    msg = EmailMessage()
+    msg["Subject"] = "Successful Registeration"
+    msg["From"] = mail
+    msg["To"] = voter_email
+    ethscan_url = f"https://sepolia.etherscan.io/tx/{tx_receipt}"
+    msg.set_content(
+        f"Dear User,\nYou have been successfully registered and are eligible to vote in the election.\nTransaction Hash : {tx_receipt}\nCheckout transaction on blockchain explorer at {ethscan_url}")
+    s.send_message(msg)
 
 
 
@@ -204,6 +226,28 @@ async def verify_voter(aadhaar : int = Form(...) , token_admin : str =  Form(...
     admin  = get_admin_details(payload.get("sub"))
     if web3.from_wei(web3.eth.get_balance(user.wallet) , "ether") < 0.001:
         await transferEth(user.wallet , 0.001 , user.email)
-    await registerVoter(admin.wallet , admin.private_key , user.wallet)
+    await registerVoter(admin.wallet , admin.private_key , user.wallet , user.email)
+
+
+@app.post("/addCandidate")
+async def add_Candidate(name : str = Form(...) , party_photo_url : str = Form(...) , party_name : str = Form(...) , token_admin :str = Form(...)):
+    payload = jwt.decode(token_admin, SECRET_KEY, algorithms=[ALGORITHM])
+    if payload.get("type") != "admin":
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Only admin can add candidates"
+        )
+    admin = get_admin_details(payload.get("sub"))
+    id = contract.functions.getContestantCount().call() + 1
+    create_candidate_db(Candidate(id = id , name = name , party_name = party_name , party_photo_url = party_photo_url))
+    nonce = web3.eth.get_transaction_count(admin.wallet)
+    chain_id = web3.eth.chain_id
+    call_function = contract.functions.addContestant(name).build_transaction({"from" : admin.wallet , "nonce" : nonce , "chainId" : chain_id})
+    signed_tx = web3.eth.account.sign_transaction(call_function, private_key=admin.private_key)
+    send_tx = web3.eth.send_raw_transaction(signed_tx.rawTransaction)
+    tx_receipt = web3.eth.wait_for_transaction_receipt(send_tx)["transactionHash"].hex()
+    print(tx_receipt)
+    return status.HTTP_201_CREATED
+
 
 
