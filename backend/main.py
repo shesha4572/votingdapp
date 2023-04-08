@@ -8,7 +8,7 @@ from passlib.context import CryptContext
 from backend.database import *
 from backend.models import *
 from eth_account import Account
-import secrets
+import secrets , json
 from web3 import Web3
 
 
@@ -18,10 +18,15 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES_VOTER = 5
 ACCESS_TOKEN_EXPIRE_MINUTES_ADMIN = 30
-blockchain_url = "http://localhost:8545"
+blockchain_url = os.getenv("infura_url")
 web3 = Web3(Web3.HTTPProvider(blockchain_url))
 faucet_key = os.getenv("faucet_key")
 faucet_addr = os.getenv("faucet_addr")
+contract_addr = os.getenv("contract_addr")
+abi = open("./backend/contracts/Election.json" , "r")
+contract_abi = json.load(abi)["abi"]
+abi.close()
+contract = web3.eth.contract(address=contract_addr , abi=contract_abi)
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -45,7 +50,7 @@ def get_password_hash(password):
     return pwd_context.hash(password)
 
 
-def get_user(aadhaar: int):
+async def get_user(aadhaar: int):
     if not checkAadhaarUsed(aadhaar):
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -55,8 +60,8 @@ def get_user(aadhaar: int):
     return user
 
 
-def authenticate_user(aadhaar: int, password: str):
-    user : UserForm = get_user(aadhaar)
+async def authenticate_user(aadhaar: int, password: str):
+    user : UserForm = await get_user(aadhaar)
     if not user:
         return False
     if not verify_password(password, user.password):
@@ -76,11 +81,11 @@ def create_access_token(data: dict, expires_delta: timedelta | None = None):
 
 
 @app.post("/tokenVoter", response_model=Token)
-def login_for_access_token(
+async def login_for_access_token(
     form_data: Annotated[OAuth2PasswordRequestForm, Depends()]
 ):
 
-    user = authenticate_user(int(form_data.username), form_data.password)
+    user = await authenticate_user(int(form_data.username), form_data.password)
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -99,7 +104,7 @@ def default():
     return {"res" : "Hello World"}
 
 
-def transferEth(wallet : str , value : float , email : str):
+async def transferEth(wallet : str , value : float , email : str):
     nonce = web3.eth.get_transaction_count(faucet_addr)
     tx = {
         'nonce': nonce,
@@ -114,8 +119,8 @@ def transferEth(wallet : str , value : float , email : str):
 
 
 @app.post("/createVoter")
-def create_user(first_name : str = Form(...) , last_name : str =  Form(...) , year : int = Form(...) , month : int = Form(...) , day : int = Form(...) , aadhaar : int = Form(...) , email : str = Form(...)):
-    if checkAadhaarUsed(aadhaar):
+async def create_user(first_name : str = Form(...) , last_name : str =  Form(...) , year : int = Form(...) , month : int = Form(...) , day : int = Form(...) , aadhaar : int = Form(...) , email : str = Form(...)):
+    if await checkAadhaarUsed(aadhaar):
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
             detail="User already exists"
@@ -140,13 +145,13 @@ def create_user(first_name : str = Form(...) , last_name : str =  Form(...) , ye
     return status.HTTP_201_CREATED
 
 @app.post("/createAdmin")
-def create_admin(email : str = Form(...) , password : str = Form(...) , wallet : str = Form(...) , private_key : str = Form(...)):
+async def create_admin(email : str = Form(...) , password : str = Form(...) , wallet : str = Form(...) , private_key : str = Form(...)):
     hashed = get_password_hash(password)
     create_admin_db(AdminForm(email = email , password = hashed , wallet = wallet , private_key = private_key))
     return status.HTTP_201_CREATED
 
 
-def authenticate_admin(email : str , password : str):
+async def authenticate_admin(email : str , password : str):
     admin = get_admin_details(email)
     if not admin :
         raise HTTPException(
@@ -160,10 +165,10 @@ def authenticate_admin(email : str , password : str):
         )
     return admin
 @app.post("/tokenAdmin" , response_model=Token)
-def login_for_admin_token(
+async def login_for_admin_token(
     form_data: Annotated[OAuth2PasswordRequestForm, Depends()]
 ):
-    admin = authenticate_admin(form_data.username , form_data.password)
+    admin = await authenticate_admin(form_data.username , form_data.password)
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES_ADMIN)
     access_token = create_access_token(
         data={"sub": admin.email, "type": "admin"}, expires_delta=access_token_expires
@@ -171,8 +176,18 @@ def login_for_admin_token(
     return {"access_token": access_token, "token_type": "bearer"}
 
 
+async def registerVoter(admin_addr , admin_key , voter_addr):
+    nonce = web3.eth.get_transaction_count(admin_addr)
+    chain_id = web3.eth.chain_id
+    call_function = contract.functions.voterRegisteration(voter_addr).build_transaction({"from" : admin_addr , "nonce" : nonce , "chainId" : chain_id})
+    signed_tx = web3.eth.account.sign_transaction(call_function , private_key=admin_key)
+    send_tx = web3.eth.send_raw_transaction(signed_tx.rawTransaction)
+    tx_receipt = web3.eth.wait_for_transaction_receipt(send_tx)["transactionHash"].hex()
+
+
+
 @app.post("/verifyVoter")
-def verify_voter(aadhaar : int = Form(...) , token_admin : str =  Form(...)):
+async def verify_voter(aadhaar : int = Form(...) , token_admin : str =  Form(...)):
     payload = jwt.decode(token_admin , SECRET_KEY , algorithms=[ALGORITHM])
     if payload.get("type") != "admin":
         raise HTTPException(
@@ -186,5 +201,9 @@ def verify_voter(aadhaar : int = Form(...) , token_admin : str =  Form(...)):
         )
     set_voter_eligible(aadhaar)
     user = get_user_details(aadhaar)
+    admin  = get_admin_details(payload.get("sub"))
     if web3.from_wei(web3.eth.get_balance(user.wallet) , "ether") < 0.001:
-        transferEth(user.wallet , 0.001)
+        await transferEth(user.wallet , 0.001 , user.email)
+    await registerVoter(admin.wallet , admin.private_key , user.wallet)
+
+
