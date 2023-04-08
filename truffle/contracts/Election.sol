@@ -1,20 +1,16 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.4.22 <0.9.0;
 
-contract Contest{
+contract Election{
 	
 	struct Contestant{
 		uint id;
 		string name;
 		uint voteCount;
-		string party;
-		uint age;
-		string qualification;
 	}
 
 	struct Voter{
 		bool hasVoted;
-		uint vote;
 		bool isRegistered;
 	}
 
@@ -35,7 +31,7 @@ contract Contest{
 	    _;
 	}
 
-	constructor() public{
+	constructor(){
 		admin=msg.sender;
         state=PHASE.reg;
 	}
@@ -45,9 +41,9 @@ contract Contest{
         state = x;
     }
 
-	function addContestant(string memory _name , string memory _party , uint _age , string memory _qualification) public onlyAdmin validState(PHASE.reg){
+	function addContestant(string memory _name) public onlyAdmin validState(PHASE.reg){
 		contestantsCount++;
-		contestants[contestantsCount]=Contestant(contestantsCount,_name,0,_party,_age,_qualification);
+		contestants[contestantsCount]=Contestant(contestantsCount,_name,0);
 	}
 
 	function voterRegisteration(address user) public onlyAdmin validState(PHASE.reg){
@@ -61,6 +57,19 @@ contract Contest{
         require(_contestantId > 0 && _contestantId<=contestantsCount);
 		contestants[_contestantId].voteCount++;
 		voters[msg.sender].hasVoted=true;
-		voters[msg.sender].vote=_contestantId;
+	}
+
+	function getContestantCount() public view returns (uint) {
+		return contestantsCount;
+	}
+
+	function getPhase() public view returns (uint) {
+		if(state == PHASE.reg){
+			return 0;
+		}
+		else if(state == PHASE.voting){
+			return 1;
+		}
+		return 2;
 	}
 }

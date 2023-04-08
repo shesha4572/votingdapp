@@ -1,18 +1,14 @@
-const SimpleStorage = artifacts.require("SimpleStorage");
+const Election = artifacts.require("Election");
 
-contract('SimpleStorage', () => {
+contract('Election', () => {
   it('should read newly written values', async() => {
-    const simpleStorageInstance = await SimpleStorage.deployed();
-    var value = (await simpleStorageInstance.read()).toNumber();
-
+    const electionInstance = await Election.deployed();
+    var value = (await electionInstance.getContestantCount()).toNumber();
     assert.equal(value, 0, "0 wasn't the initial value");
-
-    await simpleStorageInstance.write("hello");
-    value = (await simpleStorageInstance.readmessage()).toString();
-    assert.equal(value, "hello", "1 was not written");
-
-    await simpleStorageInstance.write("ethereum");
-    value = (await simpleStorageInstance.readmessage()).toString();
-    assert.equal(value, "ethereum", "2 was not written");
+    await electionInstance.addContestant("Modi");
+    var count = (await electionInstance.getContestantCount()).toNumber();
+    assert.equal(count, 1, "0 wasn't the initial value");
+    var phase = (await electionInstance.getPhase())
+    assert.equal(phase , 0 , phase + "wrong");
   });
 });
