@@ -58,24 +58,24 @@
       <DataType>String|12s</DataType>
       <Position>1</Position>
     </column>
-    <column id="20" parent="7" name="private_key">
+    <column id="20" parent="7" name="last_name">
       <DataType>String|12s</DataType>
       <Position>1</Position>
     </column>
-    <column id="21" parent="7" name="wallet">
+    <column id="21" parent="7" name="password">
       <DataType>String|12s</DataType>
       <Position>1</Position>
     </column>
-    <column id="22" parent="7" name="year">
+    <column id="22" parent="7" name="private_key">
+      <DataType>String|12s</DataType>
+      <Position>1</Position>
+    </column>
+    <column id="23" parent="7" name="wallet">
+      <DataType>String|12s</DataType>
+      <Position>1</Position>
+    </column>
+    <column id="24" parent="7" name="year">
       <DataType>Int32|4s</DataType>
-      <Position>1</Position>
-    </column>
-    <column id="23" parent="7" name="last_name">
-      <DataType>String|12s</DataType>
-      <Position>1</Position>
-    </column>
-    <column id="24" parent="7" name="password">
-      <DataType>String|12s</DataType>
       <Position>1</Position>
     </column>
     <column id="25" parent="7" name="aadhaar">

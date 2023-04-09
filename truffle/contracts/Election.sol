@@ -72,4 +72,12 @@ contract Election{
 		}
 		return 2;
 	}
+
+	function getResult() public view validState(PHASE.done) returns (uint[] memory result){
+		uint[] memory result = new uint[](contestantsCount);
+		for(uint i = 1; i <= contestantsCount; i++){
+			result[i - 1] = contestants[i].voteCount;
+		}
+		return result;
+	}
 }

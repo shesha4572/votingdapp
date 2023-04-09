@@ -32,6 +32,7 @@ s = smtplib.SMTP('smtp.gmail.com', 587)
 s.starttls()
 mail = "votingdapp123@gmail.com"
 s.login(mail , os.getenv("mail_pass"))
+chain_id = web3.eth.chain_id
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -192,7 +193,6 @@ async def login_for_admin_token(
 
 async def registerVoter(admin_addr , admin_key , voter_addr , voter_email):
     nonce = web3.eth.get_transaction_count(admin_addr)
-    chain_id = web3.eth.chain_id
     call_function = contract.functions.voterRegisteration(voter_addr).build_transaction({"from" : admin_addr , "nonce" : nonce , "chainId" : chain_id})
     signed_tx = web3.eth.account.sign_transaction(call_function , private_key=admin_key)
     send_tx = web3.eth.send_raw_transaction(signed_tx.rawTransaction)
@@ -241,7 +241,6 @@ async def add_Candidate(name : str = Form(...) , party_photo_url : str = Form(..
     id = contract.functions.getContestantCount().call() + 1
     create_candidate_db(Candidate(id = id , name = name , party_name = party_name , party_photo_url = party_photo_url))
     nonce = web3.eth.get_transaction_count(admin.wallet)
-    chain_id = web3.eth.chain_id
     call_function = contract.functions.addContestant(name).build_transaction({"from" : admin.wallet , "nonce" : nonce , "chainId" : chain_id})
     signed_tx = web3.eth.account.sign_transaction(call_function, private_key=admin.private_key)
     send_tx = web3.eth.send_raw_transaction(signed_tx.rawTransaction)
@@ -276,11 +275,52 @@ async def change_phase(phase : int = Form(...) , token_admin : str = Form(...)):
             detail="Cannot change phase to previous one or same one"
         )
     nonce = web3.eth.get_transaction_count(admin.wallet)
-    chain_id = web3.eth.chain_id
     call_function = contract.functions.changeState(phase).build_transaction({"from" : admin.wallet , "nonce" : nonce , "chainId" : chain_id})
     signed_tx = web3.eth.account.sign_transaction(call_function, private_key=admin.private_key)
     send_tx = web3.eth.send_raw_transaction(signed_tx.rawTransaction)
     tx_receipt = web3.eth.wait_for_transaction_receipt(send_tx)["transactionHash"].hex()
     print(tx_receipt)
 
+
+async def sendVote(user: UserForm , candidate_id : int ):
+    nonce = web3.eth.get_transaction_count(user.wallet)
+    call_function = contract.functions.vote(candidate_id).build_transaction({"from" : user.wallet , "nonce" : nonce , "chainId" : chain_id})
+    signed_tx = web3.eth.account.sign_transaction(call_function, private_key=user.private_key)
+    send_tx = web3.eth.send_raw_transaction(signed_tx.rawTransaction)
+    tx_receipt = web3.eth.wait_for_transaction_receipt(send_tx)["transactionHash"].hex()
+    print(tx_receipt)
+    msg = EmailMessage()
+    msg["Subject"] = "Vote cast Successfully"
+    msg["From"] = mail
+    msg["To"] = user.email
+    ethscan_url = f"https://sepolia.etherscan.io/tx/{tx_receipt}"
+    msg.set_content(
+        f"Dear User,\nThank You for exercising your Right to Vote. Your vote has been successfully cast.\nTransaction Hash : {tx_receipt}\nCheckout transaction on blockchain explorer at {ethscan_url}")
+    s.send_message(msg)
+    return tx_receipt
+
+@app.post("/castVote")
+async def cast_vote(token_voter : str = Form(...) , id : int = Form(...)):
+    try:
+       payload = jwt.decode(token_voter , SECRET_KEY , algorithms=[ALGORITHM])
+       if not payload.get("eligible"):
+           raise HTTPException(
+               status_code=status.HTTP_403_FORBIDDEN,
+               detail="Voter has not been verified to vote in this election or has already voted"
+           )
+    except:
+        raise HTTPException(
+            status_code=status.HTTP_408_REQUEST_TIMEOUT,
+            detail="Login window timed out"
+        )
+    current_phase = contract.functions.getPhase().call()
+    if current_phase != 1:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Votes accepted only in voting phase"
+        )
+    user = get_user_details(payload.get("sub"))
+    tx_hash = await cast_vote(user , id)
+    set_voter_ineligible(user.aadhaar)
+    return {"hash" : tx_hash}
 
