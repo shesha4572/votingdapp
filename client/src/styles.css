@@ -1,6 +1,7 @@
 html {
   font-size: 10px;
   font-family: sans-serif;
+  color-scheme: dark;
 }
 
 body{
@@ -19,8 +20,7 @@ body{
   background-color: #1F2833;
   align-items: center;
   justify-content: space-evenly;
-  margin:auto;
-  margin-top:10vh;
+  margin: 10vh auto auto;
   border-radius: 10px;
 }
 
@@ -91,8 +91,7 @@ body{
   border-radius: 10px;
   width: 50vw;
   height: 80vh;
-  margin: auto;
-  margin-top: 10vh;
+  margin: 10vh auto auto;
 }
 
 #reg-Top-text{
@@ -331,12 +330,24 @@ nav{
   align-items: center;
   background-color: #1F2833;
   border-radius: 20px;
-  padding: 30px;
+  padding: 20px;
 }
 
 .card2-img{
   height: 100%;
   border-radius: 20px;
+  width:12vw;
+}
+
+.card2-content{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: Cambria;
+}
+
+.card2-content>p{
+  font-size: 2rem;
 }
 
 .card2-vote-btn{
