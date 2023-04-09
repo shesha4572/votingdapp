@@ -86,7 +86,7 @@ def create_access_token(data: dict, expires_delta: timedelta | None = None):
     return encoded_jwt
 
 
-@app.post("/tokenVoter", response_model=Token)
+@app.post("/tokenVoter")
 async def login_for_access_token(
     form_data: Annotated[OAuth2PasswordRequestForm, Depends()]
 ):
@@ -100,9 +100,9 @@ async def login_for_access_token(
         )
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES_VOTER)
     access_token = create_access_token(
-        data={"sub": user.aadhaar , "type" : "voter" , "eligible" : not user.disabled}, expires_delta=access_token_expires
+        data={"sub": str(user.aadhaar) , "type" : "voter" , "eligible" : str(not user.disabled)}, expires_delta=access_token_expires
     )
-    return {"access_token": access_token, "token_type": "bearer"}
+    return {"access_token": access_token, "token_type": "bearer" , "wallet_id" : user.wallet}
 
 
 @app.get("/")
@@ -303,7 +303,7 @@ async def sendVote(user: UserForm , candidate_id : int ):
 async def cast_vote(token_voter : str = Form(...) , id : int = Form(...)):
     try:
        payload = jwt.decode(token_voter , SECRET_KEY , algorithms=[ALGORITHM])
-       if not payload.get("eligible"):
+       if not str(payload.get("eligible")):
            raise HTTPException(
                status_code=status.HTTP_403_FORBIDDEN,
                detail="Voter has not been verified to vote in this election or has already voted"
@@ -319,8 +319,17 @@ async def cast_vote(token_voter : str = Form(...) , id : int = Form(...)):
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Votes accepted only in voting phase"
         )
-    user = get_user_details(payload.get("sub"))
-    tx_hash = await cast_vote(user , id)
-    set_voter_ineligible(user.aadhaar)
+    user = get_user_details(int(payload.get("sub")))
+    tx_hash = await sendVote(user , id)
     return {"hash" : tx_hash}
 
+@app.get("/getResult")
+def get_result():
+    current_phase = contract.functions.getPhase().call()
+    if current_phase != 2:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Result declared after voting phase finishes"
+        )
+    result = contract.functions.getResult().call()
+    print(result)

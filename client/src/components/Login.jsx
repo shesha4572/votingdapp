@@ -5,6 +5,7 @@ import TextField from '@mui/material/TextField'
 import axios from "axios";
 import Cookies from 'universal-cookie';
 import {Link} from "@mui/material";
+import {useNavigate} from "react-router-dom";
 
 const btn = {
     fontSize: '1.2vw',
@@ -29,14 +30,14 @@ export const Login = () => {
 
     const [aadhaar , setAadhaar] = useState("")
     const [password , setPassword] = useState("")
-
+    const navigator = useNavigate()
 
     function onLoginClick() {
         const form = new FormData()
         form.set("username" , aadhaar)
         form.set("password" , password)
 
-        axios.post("http://localhost:8000/tokenVoter" , form).then(res => {if(res.status === 200){const cookie = new Cookies; cookie.set('voter_token' , res.data.access_token , {maxAge : 300}); }})
+        axios.post("http://localhost:8000/tokenVoter" , form).then(res => {if(res.status === 200){const cookie = new Cookies(); cookie.set('voter_token' , res.data.access_token , {maxAge : 300}); cookie.set("wallet" , res.data.wallet_id , {maxAge : 300}); console.log(res.data); navigator("/vote");}})
     }
 
     return(

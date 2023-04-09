@@ -66,8 +66,3 @@ def get_candidate_details(id : int):
     query = {"id" : id}
     res = list(candidates.find(query))
     return Candidate(**res[0])
-
-def set_voter_ineligible(aadhaar : int):
-    query = {"aadhaar": aadhaar}
-    updated_value = {"$set": {"disabled": True}}
-    voters.update_one(query, updated_value)
