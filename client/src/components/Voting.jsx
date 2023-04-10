@@ -21,6 +21,7 @@ export const Voting = () => {
 
     const[Candidates, setCandidates] = useState([])
     const[doneVoting , setDoneVoting] = useState(false)
+    const[phase, setPhase] = useState("")
     const[tx_hash , setTx] = useState("")
     const cookie = new Cookies()
     const jwt = cookie.get("voter_token")
@@ -29,8 +30,15 @@ export const Voting = () => {
         if(jwt === undefined) {
             navigator("/voterLogin")
         }
-       axios.get("http://localhost:8000/allCandidates").then(res => {if (res.status === 200){setCandidates(res.data.candidates); console.log(Candidates)}})
+        axios.get("http://localhost:8000/getPhase").then(res=> {if(res.status === 200){setPhase(res.data.phase)}
+        if (res.data.phase === 1){
+            return axios.get("http://localhost:8000/allCandidates")
+        }
+        })
+        .then(res => {if (res.status === 200){setCandidates(res.data.candidates); console.log(Candidates)}})
     },[navigator])
+
+
 
     function sendVote(id){
         console.log(jwt.toString())
@@ -46,16 +54,24 @@ export const Voting = () => {
         })
     }
 
-    if(doneVoting){
+    if(doneVoting || phase !== 1){
+        let message="";
+        if(phase === 0){
+            message="Voting will begin after registration process.";
+        }
+        else if(phase === 2){
+            message="Voting has finished. Results are announced."
+        }
         return (
             <div>
             <Navigator />
             <Container id='voting-cont'>
-                <h3> You have already voted! Check your vote transaction <a href={`https://sepolia.etherscan.io/tx/${tx_hash}`}>here</a></h3>
+                <h3 id='no-voting-msg'>{message}</h3>
             </Container>
                 </div>
         )
     }
+
 
     else {
 
@@ -72,7 +88,7 @@ export const Voting = () => {
                                     <div className='card2-content'>
                                         <p>{element.name}</p>
                                         <Button className="card2-vote-btn" variant="contained" sx={btn} id={element.id}
-                                                onClick={e => sendVote(element.id)}>Vote</Button>
+                                                onClick={sendVote(element.id)}>Vote</Button>
                                     </div>
                                 </div>
                             )
