@@ -333,3 +333,9 @@ def get_result():
         )
     result = contract.functions.getResult().call()
     print(result)
+    return{"result" : result}
+
+@app.get("/getPhase")
+def get_phase():
+    current_phase = contract.functions.getPhase().call()
+    return {"phase":current_phase}

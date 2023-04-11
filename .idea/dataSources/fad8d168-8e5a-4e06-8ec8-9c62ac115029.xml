@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <dataSource name="votingdapp">
-  <database-model serializer="dbm" dbms="MONGO" family-id="MONGO" format-version="4.43">
-    <root id="1">
-      <ServerVersion>5.0.15</ServerVersion>
-    </root>
+  <database-model serializer="dbm" dbms="MONGO" family-id="MONGO" format-version="4.48">
+    <root id="1"/>
     <schema id="2" parent="1" name="Voting_DAPP"/>
     <schema id="3" parent="1" name="admin"/>
     <schema id="4" parent="1" name="local"/>
@@ -11,91 +9,91 @@
     <table id="6" parent="2" name="candidates"/>
     <table id="7" parent="2" name="voters"/>
     <column id="8" parent="5" name="_id">
-      <DataType>ObjectId|12s</DataType>
+      <DasType>ObjectId|12s</DasType>
       <Position>1</Position>
     </column>
     <column id="9" parent="5" name="email">
-      <DataType>String|12s</DataType>
+      <DasType>String|12s</DasType>
       <Position>1</Position>
     </column>
     <column id="10" parent="5" name="password">
-      <DataType>String|12s</DataType>
+      <DasType>String|12s</DasType>
       <Position>1</Position>
     </column>
     <column id="11" parent="5" name="private_key">
-      <DataType>String|12s</DataType>
+      <DasType>String|12s</DasType>
       <Position>1</Position>
     </column>
     <column id="12" parent="5" name="wallet">
-      <DataType>String|12s</DataType>
+      <DasType>String|12s</DasType>
       <Position>1</Position>
     </column>
     <column id="13" parent="6" name="_id">
-      <DataType>ObjectId|12s</DataType>
+      <DasType>ObjectId|12s</DasType>
       <Position>1</Position>
     </column>
     <column id="14" parent="6" name="id">
-      <DataType>Int32|4s</DataType>
+      <DasType>Int32|4s</DasType>
       <Position>1</Position>
     </column>
     <column id="15" parent="6" name="name">
-      <DataType>String|12s</DataType>
+      <DasType>String|12s</DasType>
       <Position>1</Position>
     </column>
     <column id="16" parent="6" name="party_name">
-      <DataType>String|12s</DataType>
+      <DasType>String|12s</DasType>
       <Position>2</Position>
     </column>
     <column id="17" parent="6" name="party_photo_url">
-      <DataType>String|12s</DataType>
+      <DasType>String|12s</DasType>
       <Position>3</Position>
     </column>
     <column id="18" parent="7" name="_id">
-      <DataType>ObjectId|12s</DataType>
+      <DasType>ObjectId|12s</DasType>
       <Position>1</Position>
     </column>
     <column id="19" parent="7" name="first_name">
-      <DataType>String|12s</DataType>
+      <DasType>String|12s</DasType>
       <Position>1</Position>
     </column>
-    <column id="20" parent="7" name="last_name">
-      <DataType>String|12s</DataType>
+    <column id="20" parent="7" name="private_key">
+      <DasType>String|12s</DasType>
       <Position>1</Position>
     </column>
-    <column id="21" parent="7" name="password">
-      <DataType>String|12s</DataType>
+    <column id="21" parent="7" name="wallet">
+      <DasType>String|12s</DasType>
       <Position>1</Position>
     </column>
-    <column id="22" parent="7" name="private_key">
-      <DataType>String|12s</DataType>
+    <column id="22" parent="7" name="year">
+      <DasType>Int32|4s</DasType>
       <Position>1</Position>
     </column>
-    <column id="23" parent="7" name="wallet">
-      <DataType>String|12s</DataType>
+    <column id="23" parent="7" name="last_name">
+      <DasType>String|12s</DasType>
       <Position>1</Position>
     </column>
-    <column id="24" parent="7" name="year">
-      <DataType>Int32|4s</DataType>
+    <column id="24" parent="7" name="password">
+      <DasType>String|12s</DasType>
       <Position>1</Position>
     </column>
     <column id="25" parent="7" name="aadhaar">
-      <DataType>Int32|4s</DataType>
+      <DasType>Int32|4s</DasType>
       <Position>2</Position>
     </column>
     <column id="26" parent="7" name="month">
-      <DataType>Int32|4s</DataType>
+      <DasType>Int32|4s</DasType>
       <Position>2</Position>
     </column>
     <column id="27" parent="7" name="day">
-      <DataType>Int32|4s</DataType>
+      <DasType>Int32|4s</DasType>
       <Position>3</Position>
     </column>
     <column id="28" parent="7" name="disabled">
-      <DataType>Boolean|12s</DataType>
+      <DasType>Boolean|12s</DasType>
       <Position>4</Position>
     </column>
     <column id="29" parent="7" name="email">
-      <DataType>String|12s</DataType>
+      <DasType>String|12s</DasType>
       <Position>5</Position>
     </column>
   </database-model>
