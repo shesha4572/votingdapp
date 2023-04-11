@@ -5,6 +5,7 @@ import {BrowserRouter, Route, Routes} from "react-router-dom";
 import {AdminLogin} from "./components/Admin-Login";
 import {Homepage} from "./components/homepage";
 import {Voting} from "./components/Voting";
+import {Result} from "./components/Result";
 function App() {
   return (
     <div id="App">
@@ -15,6 +16,7 @@ function App() {
         <Route path={"/adminLogin"} element={<AdminLogin/>}/>
         <Route path={"/"} element={<Homepage/>}/>
         <Route path={"/vote"} element={<Voting/>}/>
+        <Route path={"/result"} element={<Result/>}/>
       </Routes>
     </BrowserRouter>
     </div>

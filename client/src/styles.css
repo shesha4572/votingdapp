@@ -285,42 +285,6 @@ nav{
 }
 
 
-/*CANDIDATE CARD CSS*/
-
-.card{
-  display: flex;
-  flex-direction: column;
-  width:20vw;
-  align-items: center;
-  background-color: #1F2833;
-  padding: 30px 30px;
-  row-gap:25px;
-  border-radius: 10px;
-}
-
-.card-details{
-  display: flex;
-  flex-direction: column;
-  align-items: self-start;
-  color: #C5C6C7;
-  font-family: Cambria;
-  font-size: 1.5rem;
-  row-gap: 20px;
-}
-
-.card-details>p{
-  margin: 0;
-}
-
-.card-img{
-  border-radius: 10px;
-}
-
-.card-vote-btn{
-  width:8vw;
-}
-
-
 /*CANDIDATE CARD 2 CSS*/
 
 .card2{
@@ -352,4 +316,29 @@ nav{
 
 .card2-vote-btn{
   height: 5vh;
+}
+
+
+/*RESULT PAGE CSS*/
+
+#result-cont{
+  padding: 8vh 0;
+  display: flex;
+  justify-content: space-between;
+  width:80vw;
+  column-gap: 4vw;
+  flex-wrap: wrap;
+  row-gap: 5vh;
+}
+
+#no-voting-msg{
+  text-align: center;
+  font-size: 3rem;
+  font-family: Roboto;
+}
+
+#wallet-id{
+  text-decoration: none;
+  color: #C5C6C7;
+  font-size: 1.6rem;
 }
