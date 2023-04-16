@@ -66,3 +66,9 @@ def get_candidate_details(id : int):
     query = {"id" : id}
     res = list(candidates.find(query))
     return Candidate(**res[0])
+
+def set_tx_hash(aadhaar : int , tx_hash : str):
+    query = {"aadhaar": aadhaar}
+    updated_value = {"$set": {"tx_hash": tx_hash}}
+    voters.update_one(query , updated_value)
+

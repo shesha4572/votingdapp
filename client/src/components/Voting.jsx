@@ -26,16 +26,21 @@ export const Voting = () => {
     const cookie = new Cookies()
     const jwt = cookie.get("voter_token")
     const navigator = useNavigate()
+    const form = new FormData()
+    form.set("token_voter" , jwt)
     useEffect(() => {
         if(jwt === undefined) {
             navigator("/voterLogin")
         }
         axios.get("http://localhost:8000/getPhase").then(res=> {if(res.status === 200){setPhase(res.data.phase)}
-        if (res.data.phase === 1){
-            return axios.get("http://localhost:8000/allCandidates")
+        if (res.data.phase === 1 && jwt !== undefined){
+            return axios.get(`http://localhost:8000/didVote?token_voter=${jwt}`)
+
         }
         })
-        .then(res => {if (res.status === 200){setCandidates(res.data.candidates); console.log(Candidates)}})
+        .then(res => { if(res.data.tx_hash !== null) {setTx(res.data.tx_hash)} return axios.get("http://localhost:8000/allCandidates");
+        })
+        .then(res => {if (res.status === 200){setCandidates(res.data.candidates)}})
     },[navigator])
 
 
@@ -43,7 +48,7 @@ export const Voting = () => {
     function sendVote(id){
         console.log(jwt.toString())
         const form = new FormData()
-        form.set("token_voter" , jwt.toString())
+        form.set("token_voter" , jwt)
         form.set("id" , id)
         axios.post("http://localhost:8000/castVote" , form).then(res => {
             if(res.status === 200){
@@ -54,13 +59,16 @@ export const Voting = () => {
         })
     }
 
-    if(doneVoting || phase !== 1){
+    if(tx_hash !== "" || phase !== 1){
         let message="";
         if(phase === 0){
             message="Voting will begin after registration process.";
         }
         else if(phase === 2){
             message="Voting has finished. Results are announced."
+        }
+        else if(phase === 1){
+            message = `You have already voted. Your voting transaction hash is ${tx_hash}`
         }
         return (
             <div>
@@ -88,7 +96,7 @@ export const Voting = () => {
                                     <div className='card2-content'>
                                         <p>{element.name}</p>
                                         <Button className="card2-vote-btn" variant="contained" sx={btn} id={element.id}
-                                                onClick={sendVote(element.id)}>Vote</Button>
+                                                onClick={e => sendVote(element.id)}>Vote</Button>
                                     </div>
                                 </div>
                             )

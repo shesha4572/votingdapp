@@ -17,6 +17,7 @@ class UserForm(BaseModel):
     wallet : str | None = None
     password : str | None = None
     private_key : str | None = None
+    tx_hash : str | None = None
 
 
 class UserData(BaseModel):

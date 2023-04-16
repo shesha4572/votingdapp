@@ -12,7 +12,7 @@ export const Result = () => {
 
     useEffect(() => {
         axios.get("http://localhost:8000/getPhase").then(res=> {if(res.status === 200){setPhase(res.data.phase)}
-            if (res.data.phase === 1){
+            if (res.data.phase === 2){
                 return axios.get("http://localhost:8000/allCandidates")
             }
         })

@@ -283,8 +283,8 @@ async def change_phase(phase : int = Form(...) , token_admin : str = Form(...)):
 
 
 async def sendVote(user: UserForm , candidate_id : int ):
-    nonce = web3.eth.get_transaction_count(user.wallet)
-    call_function = contract.functions.vote(candidate_id).build_transaction({"from" : user.wallet , "nonce" : nonce , "chainId" : chain_id})
+    nonce_user = web3.eth.get_transaction_count(user.wallet)
+    call_function = contract.functions.vote(candidate_id).build_transaction({"from" : user.wallet , "nonce" : nonce_user , "chainId" : chain_id})
     signed_tx = web3.eth.account.sign_transaction(call_function, private_key=user.private_key)
     send_tx = web3.eth.send_raw_transaction(signed_tx.rawTransaction)
     tx_receipt = web3.eth.wait_for_transaction_receipt(send_tx)["transactionHash"].hex()
@@ -321,6 +321,7 @@ async def cast_vote(token_voter : str = Form(...) , id : int = Form(...)):
         )
     user = get_user_details(int(payload.get("sub")))
     tx_hash = await sendVote(user , id)
+    set_tx_hash(user.aadhaar , tx_hash)
     return {"hash" : tx_hash}
 
 @app.get("/getResult")
@@ -339,3 +340,9 @@ def get_result():
 def get_phase():
     current_phase = contract.functions.getPhase().call()
     return {"phase":current_phase}
+
+@app.get("/didVote")
+def did_vote(token_voter : str):
+    payload = jwt.decode(token_voter, SECRET_KEY, algorithms=[ALGORITHM])
+    user = get_user_details(int(payload.get("sub")))
+    return {"tx_hash" : user.tx_hash}
