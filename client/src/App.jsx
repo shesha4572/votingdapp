@@ -6,6 +6,7 @@ import {AdminLogin} from "./components/Admin-Login";
 import {Homepage} from "./components/homepage";
 import {Voting} from "./components/Voting";
 import {Result} from "./components/Result";
+import {AdminPhase} from "./components/AdminPhase";
 function App() {
   return (
     <div id="App">
@@ -17,6 +18,7 @@ function App() {
         <Route path={"/"} element={<Homepage/>}/>
         <Route path={"/vote"} element={<Voting/>}/>
         <Route path={"/result"} element={<Result/>}/>
+        <Route path={"/admin"} element={<AdminPhase/>}/>
       </Routes>
     </BrowserRouter>
     </div>

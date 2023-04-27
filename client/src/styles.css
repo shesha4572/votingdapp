@@ -342,3 +342,29 @@ nav{
   color: #C5C6C7;
   font-size: 1.6rem;
 }
+
+
+/*Admin page css*/
+
+.admin-page{
+  width:100%;
+  height: 100vh;
+  background-color: #1A1A1D;
+  font-size: 2rem;
+}
+
+#admin-nav{
+  display:flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 3vh 3vw;
+  margin-bottom: 10vh;
+  height: 10vh;
+  font-size: 2rem;
+
+  background-color: #1F2833;
+}
+
+
+
+
