@@ -2,6 +2,7 @@ import Button from "@mui/material/Button";
 import {useNavigate} from "react-router-dom";
 import {useEffect} from "react";
 import Cookies from "universal-cookie";
+import {Link} from "@mui/material";
 
 const btn = {
     fontSize : '1.6rem',
@@ -38,9 +39,9 @@ export const AdminNav = () => {
     return(
         <div id="admin-nav">
             <div>
-                <Button sx={btn2}>Change Phase</Button>
+                <Link source={"/admin"}><Button sx={btn2}>Change Phase</Button></Link>
                 <Button sx={btn2}>Verify Voter</Button>
-                <Button sx={btn2}>Add candidate</Button>
+                <Link source={"/addCandidate"}><Button sx={btn2}>Add candidate</Button></Link>
             </div>
             <Button sx={btn}>Log Out</Button>
         </div>

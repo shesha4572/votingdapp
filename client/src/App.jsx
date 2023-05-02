@@ -7,6 +7,7 @@ import {Homepage} from "./components/homepage";
 import {Voting} from "./components/Voting";
 import {Result} from "./components/Result";
 import {AdminPhase} from "./components/AdminPhase";
+import {AdminAddCandidate} from "./components/AdminAddCandidate";
 function App() {
   return (
     <div id="App">
@@ -19,6 +20,7 @@ function App() {
         <Route path={"/vote"} element={<Voting/>}/>
         <Route path={"/result"} element={<Result/>}/>
         <Route path={"/admin"} element={<AdminPhase/>}/>
+        <Route path={"/addCandidate"} element={<AdminAddCandidate />}/>
       </Routes>
     </BrowserRouter>
     </div>
