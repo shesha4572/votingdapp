@@ -40,7 +40,7 @@ export const Voting = () => {
         })
         .then(res => { if(res.data.tx_hash !== null) {setTx(res.data.tx_hash)} return axios.get("http://localhost:8000/allCandidates");
         })
-        .then(res => {if (res.status === 200){setCandidates(res.data.candidates)}})
+            .then(res => {if (res.status === 200){setCandidates(res.data.candidates)}})
     },[navigator])
 
 

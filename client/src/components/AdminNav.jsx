@@ -39,9 +39,9 @@ export const AdminNav = () => {
     return(
         <div id="admin-nav">
             <div>
-                <Link source={"/admin"}><Button sx={btn2}>Change Phase</Button></Link>
-                <Button sx={btn2}>Verify Voter</Button>
-                <Link source={"/addCandidate"}><Button sx={btn2}>Add candidate</Button></Link>
+                <Link href={"/admin"}><Button sx={btn2}>Change Phase</Button></Link>
+                <Link href={"/verifyVoter"}><Button sx={btn2}>Verify Voter</Button></Link>
+                <Link href={"/addCandidate"}><Button sx={btn2}>Add candidate</Button></Link>
             </div>
             <Button sx={btn}>Log Out</Button>
         </div>

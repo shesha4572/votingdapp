@@ -65,7 +65,7 @@ export const AdminPhase = () => {
     return(
     <div className='admin-page'>
         <AdminNav />
-        <Container>
+        <Container id="phase-cont">
             <p>Current Phase : {phaseName}</p>
             <Button sx={btn} onClick={changePhase}>Change Phase</Button>
         </Container>

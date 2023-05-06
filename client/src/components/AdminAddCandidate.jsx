@@ -17,6 +17,12 @@ export const AdminAddCandidate = () => {
 
     const navigator = useNavigate()
 
+    const[Candidates, setCandidates] = useState([])
+
+    useEffect( () => {
+        axios.get("http://localhost:8000/allCandidates").then(res => {if (res.status === 200){setCandidates(res.data.candidates)}})
+    }, [])
+
     function onClick() {
         const form = new FormData()
         form.set("name" , name)
@@ -31,12 +37,28 @@ export const AdminAddCandidate = () => {
     return(
     <div className='admin-page'>
         <AdminNav />
-        <Container>
+        <Container id="cand-form">
             <TextField  sx={input} variant='standard' type="text"  label="Candidate Name" required onChange={e => setName(e.target.value)}/>
             <TextField  sx={input} variant='standard' type="text"  label="Party Photo" required onChange={e => setPhoto(e.target.value)}/>
             <TextField  sx={input} variant='standard' type="text"  label="Party Name" required onChange={e => setPartyName(e.target.value)}/>
 
             <Button id="admin-login-button" variant='contained' sx={btn} onClick={onClick}>Add Candidate</Button>
+            <h1>Current candidates</h1>
+        </Container>
+        <Container id='voting-cont'>
+            {
+                Candidates.map((element, index) => {
+                    return (
+                        <div className='card2' key={index}>
+                            <img src={element.party_photo_url} alt="candidate symbol" className='card2-img'/>
+                            <div className='card2-content'>
+                                <p>{element.name}</p>
+                            </div>
+                        </div>
+                    )
+                })
+            }
+
         </Container>
     </div>
         )
@@ -64,8 +86,12 @@ const btn2 = {
 
 const input = {
     '.MuiInputBase-input': { fontSize: '1.5rem' },
+    backgroundColor: 'white',
+    padding: 1,
+    borderRadius: 2,
     width:'18vw',
     '.MuiInputLabel-root': {
-        fontSize:'1.5rem'
+        fontSize:'1.5rem',
+        padding:1,
     }
 }
