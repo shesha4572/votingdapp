@@ -85,13 +85,14 @@ const btn2 = {
 }
 
 const input = {
-    '.MuiInputBase-input': { fontSize: '1.5rem' },
-    backgroundColor: 'white',
+    '.MuiInputBase-input': { fontSize: '1.5rem', color: 'white'},
     padding: 1,
     borderRadius: 2,
     width:'18vw',
+    color: 'white',
     '.MuiInputLabel-root': {
         fontSize:'1.5rem',
         padding:1,
+        color: 'white'
     }
 }

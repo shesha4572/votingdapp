@@ -16,6 +16,10 @@ export const Navigator = () => {
     const voterCookie = new Cookies();
     const wallet_id = voterCookie.get("wallet");
 
+    function logout(){
+        voterCookie.remove("voter_token");
+        window.location.reload(true);
+    }
     return(
         <nav>
             <div id="nav-left">
@@ -24,7 +28,7 @@ export const Navigator = () => {
                 <Link href={"/vote"}><Button className="nav-btn" sx={btn}>Voting</Button></Link>
                 <Link href={"/result"}><Button className="nav-btn" sx={btn}>Result</Button></Link>
             </div>
-            <Button className="nav-btn" id='logout-btn' sx={btn}>Logout</Button>
+            <Button className="nav-btn" id='logout-btn' sx={btn} onClick={logout}>Logout</Button>
         </nav>
     )
 }

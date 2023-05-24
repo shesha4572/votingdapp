@@ -36,6 +36,12 @@ export const AdminNav = () => {
         }
     })
 
+    function logout(){
+        cookie.remove("admin_token");
+        window.location.reload(true);
+    }
+
+
     return(
         <div id="admin-nav">
             <div>
@@ -43,7 +49,7 @@ export const AdminNav = () => {
                 <Link href={"/verifyVoter"}><Button sx={btn2}>Verify Voter</Button></Link>
                 <Link href={"/addCandidate"}><Button sx={btn2}>Add candidate</Button></Link>
             </div>
-            <Button sx={btn}>Log Out</Button>
+            <Button sx={btn} onClick={logout}>Log Out</Button>
         </div>
     )
 }
